@@ -1,6 +1,6 @@
 var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
 var packageBody,ground
-var box1, box2, box3;
+var right, base, left;
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
@@ -31,24 +31,31 @@ function setup() {
 	engine = Engine.create();
 	world = engine.world;
 
-	packageBody = Bodies.circle(width/2 , 200 , 5, {restitution:0.2, isStatic:false});
-	Matter.Body.setStatic(packageBody , true);
+	packageBody = Bodies.circle(width/2 , 200 , 5, {restitution:0.4, isStatic:true});
 	World.add(world, packageBody);
 	
 
 	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {restitution:1, isStatic:true} );
+	ground = Bodies.rectangle(width/2, 650, width, 10 , { isStatic:true} );
 	World.add(world, ground);
 
-	box1 = createSprite(500, 600, 20, 100, {restitution:1, isStatic:true});
-	box2 = createSprite(400, 650, 200, 20),{restitution:1, isStatic:true};
-	box3 = createSprite(300, 600, 20, 100), {restitution:1, isStatic:true};
+	right = createSprite(500, 605, 20, 100);
+	base = createSprite(400, 665, 200, 20);
+	left = createSprite(300, 605, 20, 100);
 
-	World.add(world, box1);
-	World.add(world, box2);
-	World.add(world, box3);
+	right = Bodies.rectangle((500, 665, 20, 100, { isStatic:true}))
+	base = Bodies.rectangle((500, 665, 20, 100, { isStatic:true}))
+	left = Bodies.rectangle((500, 665, 20, 100, { isStatic:true}))
 
-	Engine.run(engine);
+	right.shapeColor = color(250, 0, 0)
+  	base.shapeColor = color(250, 0, 0)
+  	left.shapeColor = color(250, 0, 0)
+
+	World.add(world, right)
+	World.add(world, base)
+	World.add(world, left)
+
+	Engine.run(engine)
 
 
   
@@ -59,23 +66,34 @@ function draw() {
   rectMode(CENTER);
   background(0);
 
-  box1.shapeColor = color(250, 0, 0);
-  box2.shapeColor = color(250, 0, 0);
-  box3.shapeColor = color(250, 0, 0);
-
   packageSprite.x= packageBody.position.x 
   packageSprite.y= packageBody.position.y 
 
-  keyPressed();
+  //packageBody.collide(base);
+
   drawSprites();
  
 }
 
 function keyPressed() {
- if (keyCode === DOWN_ARROW) {
-	Matter.Body.setStatic(packageBody , false); 
+	if (keyCode === LEFT_ARROW) {
+
+		helicopterSprite.x = helicopterSprite.x - 20;
+		translation = {x: -20, y:0};
+		Matter.Body.translate(packageBody, translation);
+	}
+
+	else if (keyCode === RIGHT_ARROW) {
+
+		helicopterSprite.x = helicopterSprite.x + 20;
+		translation = {x: +20, y:0};
+		Matter.Body.translate(packageBody, translation);
+	}
+
+	else if (keyCode === DOWN_ARROW) {
+		Matter.Body.setStatic(packageBody , false);
     
-  }
+ 	}
 }
 
 
